@@ -13,9 +13,20 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\Routing\Generator\UrlGenerator;
 
 class ProductController extends AbstractController
 {
+
+    #[Route('/api', name: 'api', methods: ['GET'])]
+    public function api()
+    {
+        $data = [ 'Welcome' => "Vous avez maintenant accès à l'API", "Vous pouvez également consulter votre profil en cliquant ici" => $this->generateUrl('app_account')
+        ];
+        return new JsonResponse(json_encode($data), Response::HTTP_OK, [], true);
+
+    }
+
     #[Route('/api/products', name: 'product', methods: ['GET'])]
     public function getProductList(ProductRepository $productRepository, SerializerInterface $serializer): JsonResponse
     {
