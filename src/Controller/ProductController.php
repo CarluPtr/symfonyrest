@@ -20,7 +20,12 @@ class ProductController extends AbstractController
     #[Route('/api', name: 'api', methods: ['GET'])]
     public function api()
     {
-        $data = [ 'Welcome' => "Vous avez maintenant accès à l'API", "Vous pouvez également consulter votre profil en cliquant ici" => $this->generateUrl('app_account')
+        $data =
+            [
+                'Welcome' => "Vous avez maintenant accès à l'API",
+                "Vous pouvez également consulter votre profil ici" => $this->generateUrl('app_account'),
+                "Consulter la liste des produits de BileMo ici" => $this->generateUrl('product'),
+                "Consulter la liste des utilisateurs de BileMo ici" => $this->generateUrl('users')
         ];
         return new JsonResponse(json_encode($data), Response::HTTP_OK, [], true);
 
