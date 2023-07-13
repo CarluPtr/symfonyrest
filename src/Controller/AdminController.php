@@ -40,7 +40,6 @@ class AdminController extends AbstractController
         $entityManager->remove($user);
         $entityManager->flush();
 
-        $route = $request->headers->get('app_admin');
-        return $this->redirect($route);
+        return $this->redirectToRoute('app_admin');
     }
 }
