@@ -66,9 +66,15 @@
         <main class="px-3">
             <h1>Symfony Rest Project par <b>Carlu Pietri</b></h1>
             <p class="lead">Accédez à l'API pour pouvoir consulter tous les produits de la gamme BileMo</p>
+            {% if not app.user %}
             <p class="lead">
                 <a href="{{ path('app_login') }}" class="btn btn-lg btn-light fw-bold border-white bg-white">Se connecter</a>
             </p>
+            {% else %}
+                <p class="lead">
+                    <a href="{{ path('app_logout') }}" class="btn btn-lg btn-light fw-bold border-white bg-white">Se déconnecter</a>
+                </p>
+            {% endif %}
         </main>
 
     </div>

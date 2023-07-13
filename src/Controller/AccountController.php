@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -21,9 +22,12 @@ class AccountController extends AbstractController
     }
 
     #[Route('/api/users', name: 'users', methods: ['GET'])]
-    public function getProductList(UserRepository $userRepository, SerializerInterface $serializer): JsonResponse
+    public function getProductList(UserRepository $userRepository, SerializerInterface $serializer, Request $request): JsonResponse
     {
-        $usersList = $userRepository->findAll();
+        $page = $request->get('page',1);
+        $limit = $request->get('limit', 5);
+
+        $usersList = $userRepository->findAllWithPagination($page, $limit);
         $jsonUsersList = $serializer->serialize($usersList, 'json');
         return new JsonResponse($jsonUsersList, Response::HTTP_OK, [], true);
 

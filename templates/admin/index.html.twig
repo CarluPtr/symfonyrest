@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin{% endblock %}
+
+{% block body %}
+
+    <div class="container py-5">
+        <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                <button class="nav-link active" id="nav-users-tab" data-bs-toggle="tab" data-bs-target="#nav-users" type="button" role="tab" aria-controls="nav-users" aria-selected="true">Users</button>
+                <!-- <button class="nav-link" id="nav-category-tab" data-bs-toggle="tab" data-bs-target="#nav-category" type="button" role="tab" aria-controls="nav-category" aria-selected="false">Créer catégorie</button> -->
+            </div>
+        </nav>
+        <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade show active" id="nav-figure" role="tabpanel" aria-labelledby="nav-figure-tab">
+                <div class="row">
+                    {% for user in users %}
+                        <div class="col-12 col-md-6">
+                            <div class="container py-5">
+
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <div class="card-body text-center">
+                                            <img src="{{ user.avatar }}" alt="avatar"
+                                                 class="rounded-circle img-fluid" style="width: 150px; height: 150px;">
+                                            <p class="text-muted pb-2"></p>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-lg-8">
+                                        <div class="card border-dark mb-4">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-sm-3">
+                                                        <p class="mb-0">Email</p>
+                                                    </div>
+                                                    <div class="col-sm-9">
+                                                        <p class="text-muted mb-0">{{user.email}}</p>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="row">
+                                                    <div class="col-sm-3">
+                                                        <p class="mb-0">Rôle</p>
+                                                    </div>
+                                                    <div class="col-sm-9">
+
+                                                        {% if "ROLE_ADMIN" in user.roles %}
+
+                                                            <p class="text-muted mb-0">Administrateur</p>
+
+                                                        {% else %}
+
+                                                            <p class="text-muted mb-0">Utilisateur</p>
+
+                                                        {% endif %}
+
+                                                    </div>
+                                                </div>
+                                                    <hr>
+
+                                                    <div class="row text-center">
+                                                        <a href="{{ path('admin_delete_user', { 'id': user.id }) }}" class="btn btn-danger" >Supprimer utilisateur</a>
+                                                    </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

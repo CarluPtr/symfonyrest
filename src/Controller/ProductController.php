@@ -13,6 +13,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Contracts\Cache\ItemInterface;
+use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
 class ProductController extends AbstractController
 {
@@ -32,9 +34,18 @@ class ProductController extends AbstractController
     }
 
     #[Route('/api/products', name: 'product', methods: ['GET'])]
-    public function getProductList(ProductRepository $productRepository, SerializerInterface $serializer): JsonResponse
+    public function getProductList(ProductRepository $productRepository, SerializerInterface $serializer, Request $request, TagAwareCacheInterface $cache): JsonResponse
     {
-        $productList = $productRepository->findAll();
+        $page = $request->get('page',1);
+        $limit = $request->get('limit', 5);
+
+        $idCache = "getProductList-" . $page . "-" . $limit;
+
+        $productList = $cache->get($idCache, function (ItemInterface $item) use ($productRepository, $page, $limit){
+            $item->tag("productsCache");
+            return $productRepository->findAllWithPagination($page, $limit);
+        });
+
         $jsonProductList = $serializer->serialize($productList, 'json');
         return new JsonResponse($jsonProductList, Response::HTTP_OK, [], true);
 
@@ -50,6 +61,7 @@ class ProductController extends AbstractController
     #[Route('/api/products/{id}', name: 'deleteProduct', methods: ['DELETE'])]
     public function deleteProduct(Product $product, EntityManagerInterface $em): JsonResponse
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $em->remove($product);
         $em->flush();
 
