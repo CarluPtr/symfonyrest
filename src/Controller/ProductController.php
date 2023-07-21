@@ -61,7 +61,6 @@ class ProductController extends AbstractController
     #[Route('/api/products/{id}', name: 'deleteProduct', methods: ['DELETE'])]
     public function deleteProduct(Product $product, EntityManagerInterface $em): JsonResponse
     {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $em->remove($product);
         $em->flush();
 
