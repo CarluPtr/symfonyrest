@@ -61,19 +61,20 @@ class ProductController extends AbstractController
     #[Route('/api/products/{id}', name: 'deleteProduct', methods: ['DELETE'])]
     public function deleteProduct(Product $product, EntityManagerInterface $em): JsonResponse
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $em->remove($product);
         $em->flush();
 
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
 
-    #[Route('/api/books', name:"createProduct", methods: ['POST'])]
+    #[Route('/api/create-product', name:"createProduct", methods: ['POST'])]
     public function createProduct(
         Request $request, SerializerInterface $serializer, EntityManagerInterface $em,
         UrlGeneratorInterface $urlGenerator, ValidatorInterface $validator
     ): JsonResponse
     {
-
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $product = $serializer->deserialize($request->getContent(), Product::class, 'json');
 
         $errors = $validator->validate($product);

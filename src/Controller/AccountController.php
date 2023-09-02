@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,5 +33,15 @@ class AccountController extends AbstractController
         $jsonUsersList = $serializer->serialize($usersList, 'json');
         return new JsonResponse($jsonUsersList, Response::HTTP_OK, [], true);
 
+    }
+
+    #[Route('/api/users/{id}', name: 'deleteUser', methods: ['DELETE'])]
+    public function deleteProduct(User $user, EntityManagerInterface $em): JsonResponse
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        $em->remove($user);
+        $em->flush();
+
+        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
 }

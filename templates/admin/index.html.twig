@@ -22,7 +22,7 @@
                                     <div class="col-lg-4">
                                         <div class="card-body text-center">
                                             <img src="{{ user.avatar }}" alt="avatar"
-                                                 class="rounded-circle img-fluid" style="width: 150px; height: 150px;">
+                                                 class="rounded-circle img-fluid" style="width: 150px; height: 150px;" referrerpolicy="no-referrer"/>
                                             <p class="text-muted pb-2"></p>
                                         </div>
                                     </div>
@@ -59,7 +59,12 @@
                                                     </div>
                                                 </div>
                                                     <hr>
-
+                                                    {% if "ROLE_ADMIN" in user.roles %}
+                                                    {% else %}
+                                                        <div class="row text-center">
+                                                            <a href="{{ path('admin_grant_user', { 'id': user.id }) }}" class="btn btn-warning mb-2" >Rentre utilisateur Admin</a>
+                                                        </div>
+                                                    {% endif %}
                                                     <div class="row text-center">
                                                         <a href="{{ path('admin_delete_user', { 'id': user.id }) }}" class="btn btn-danger" >Supprimer utilisateur</a>
                                                     </div>
