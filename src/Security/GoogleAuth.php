@@ -1,6 +1,7 @@
 <?php
 namespace App\Security;
 
+use App\Entity\Client;
 use App\Entity\User;
 use League\OAuth2\Client\Provider\GoogleUser;
 use Doctrine\ORM\EntityManagerInterface;
@@ -56,6 +57,7 @@ class GoogleAuth extends OAuth2Authenticator
                     $existingUser->setEmail($email);
                     $existingUser->setGoogleId($googleUser->getId());
                     $existingUser->setHostedDomain($googleUser->getHostedDomain());
+                    $existingUser->setClient($this->entityManager->getRepository(Client::class)->findOneBy(['id' => 1]));
                     $this->entityManager->persist($existingUser);
                 }
                 $existingUser->setAvatar($googleUser->getAvatar());

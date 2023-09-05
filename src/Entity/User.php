@@ -31,6 +31,10 @@ class User implements UserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $hostedDomain = null;
 
+    #[ORM\ManyToOne(inversedBy: 'user')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Client $client = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -118,6 +122,18 @@ class User implements UserInterface
     public function setHostedDomain(?string $hostedDomain): self
     {
         $this->hostedDomain = $hostedDomain;
+
+        return $this;
+    }
+
+    public function getClient(): ?Client
+    {
+        return $this->client;
+    }
+
+    public function setClient(?Client $client): self
+    {
+        $this->client = $client;
 
         return $this;
     }
