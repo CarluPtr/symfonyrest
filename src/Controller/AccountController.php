@@ -26,11 +26,10 @@ class AccountController extends AbstractController
     #[Route('/api/users', name: 'users', methods: ['GET'])]
     public function getProductList(UserRepository $userRepository, SerializerInterface $serializer, Request $request): JsonResponse
     {
-        $page = $request->get('page',1);
-        $limit = $request->get('limit', 5);
+        $user = $this->getUser();
 
-        $usersList = $userRepository->findAllWithPagination($page, $limit);
-        $jsonUsersList = $serializer->serialize($usersList, 'json');
+        $usersList = $userRepository->findBy(array("client"=> $user->getClient()));
+        $jsonUsersList = $serializer->serialize($usersList, 'json', ['groups' => ['user']]);
         return new JsonResponse($jsonUsersList, Response::HTTP_OK, [], true);
 
     }
