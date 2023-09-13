@@ -24,13 +24,27 @@ class AccountController extends AbstractController
     }
 
     #[Route('/api/users', name: 'users', methods: ['GET'])]
-    public function getProductList(UserRepository $userRepository, SerializerInterface $serializer, Request $request): JsonResponse
+    public function getUsersList(UserRepository $userRepository, SerializerInterface $serializer, Request $request): JsonResponse
     {
         $user = $this->getUser();
 
         $usersList = $userRepository->findBy(array("client"=> $user->getClient()));
         $jsonUsersList = $serializer->serialize($usersList, 'json', ['groups' => ['user']]);
         return new JsonResponse($jsonUsersList, Response::HTTP_OK, [], true);
+
+    }
+
+    #[Route('/api/users/{id}', name: 'userInfo', methods: ['GET'])]
+    public function getUserInfo(User $user, SerializerInterface $serializer, Request $request): JsonResponse
+    {
+        $sessionUser = $this->getUser();
+        if($user->getClient() == $sessionUser->getClient()){
+            $jsonUser = $serializer->serialize($user, 'json', ['groups' => ['user']]);
+            return new JsonResponse($jsonUser, Response::HTTP_OK, ['accept' => 'json'], true);
+        }
+        else{
+            return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+        }
 
     }
 
