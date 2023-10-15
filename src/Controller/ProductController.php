@@ -28,9 +28,7 @@ class ProductController extends AbstractController
         $data =
             [
                 'Welcome' => "Vous avez maintenant accès à l'API",
-                "Vous pouvez également consulter votre profil ici" => $this->generateUrl('app_account'),
-                "Consulter la liste des produits de BileMo ici" => $this->generateUrl('product'),
-                "Consulter la liste des utilisateurs de BileMo ici" => $this->generateUrl('users')
+                "Vous pouvez accéder à la doc ici" => $this->generateUrl('app.swagger_ui')
         ];
         return new JsonResponse(json_encode($data), Response::HTTP_OK, [], true);
 
@@ -91,7 +89,7 @@ class ProductController extends AbstractController
         return new JsonResponse($jsonProduct, Response::HTTP_OK, ['accept' => 'json'], true);
     }
     /**
-     * Supprime d'un produit spécifique.
+     * Supprime un produit spécifique.
      *
      * @OA\Response(
      *     response=204,
