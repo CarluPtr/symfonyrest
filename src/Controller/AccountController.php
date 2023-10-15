@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use OpenApi\Annotations as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,6 +24,16 @@ class AccountController extends AbstractController
         ]);
     }
 
+    /**
+     * Cette méthode permet de récupérer l'ensemble des users reliés au client de l'utilisateur de session.
+     *
+     * @OA\Response(
+     *     response=200,
+     *     description="Retourne la liste des users",
+     * )
+
+     * @OA\Tag(name="Users")
+     */
     #[Route('/api/users', name: 'users', methods: ['GET'])]
     public function getUsersList(UserRepository $userRepository, SerializerInterface $serializer, Request $request): JsonResponse
     {
@@ -34,6 +45,15 @@ class AccountController extends AbstractController
 
     }
 
+    /**
+     * Récupère les détails d'un user spécifique.
+     *
+     * @OA\Response(
+     *     response=200,
+     *     description="Retourne les détails d'un user",
+     * )
+     * @OA\Tag(name="Users")
+     */
     #[Route('/api/users/{id}', name: 'userInfo', methods: ['GET'])]
     public function getUserInfo(User $user, SerializerInterface $serializer, Request $request): JsonResponse
     {
@@ -48,6 +68,15 @@ class AccountController extends AbstractController
 
     }
 
+    /**
+     * Supprime un user spécifique.
+     *
+     * @OA\Response(
+     *     response=204,
+     *     description="Supprime un user (besoin d'être connecté à un compte administrateur pour effectuer la requête.)",
+     * )
+     * @OA\Tag(name="Users")
+     */
     #[Route('/api/users/{id}', name: 'deleteUser', methods: ['DELETE'])]
     public function deleteProduct(User $user, EntityManagerInterface $em): JsonResponse
     {
