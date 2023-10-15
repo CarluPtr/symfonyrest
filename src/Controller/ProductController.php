@@ -5,6 +5,9 @@ namespace App\Controller;
 use App\Entity\Product;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Annotation\Security;
+use OpenApi\Annotations as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,6 +36,28 @@ class ProductController extends AbstractController
 
     }
 
+    /**
+     * Cette méthode permet de récupérer l'ensemble des produits.
+     *
+     * @OA\Response(
+     *     response=200,
+     *     description="Retourne la liste des produits",
+     * )
+     * @OA\Parameter(
+     *     name="page",
+     *     in="query",
+     *     description="La page que l'on veut récupérer",
+     *     @OA\Schema(type="int")
+     * )
+     *
+     * @OA\Parameter(
+     *     name="limit",
+     *     in="query",
+     *     description="Le nombre d'éléments que l'on veut récupérer",
+     *     @OA\Schema(type="int")
+     * )
+     * @OA\Tag(name="Products")
+     */
     #[Route('/api/products', name: 'product', methods: ['GET'])]
     public function getProductList(ProductRepository $productRepository, SerializerInterface $serializer, Request $request, TagAwareCacheInterface $cache): JsonResponse
     {
@@ -50,14 +75,30 @@ class ProductController extends AbstractController
         return new JsonResponse($jsonProductList, Response::HTTP_OK, [], true);
 
     }
-
+    /**
+     * Récupère les détails d'un produit spécifique.
+     *
+     * @OA\Response(
+     *     response=200,
+     *     description="Retourne les détails d'un produit",
+     * )
+     * @OA\Tag(name="Products")
+     */
     #[Route('/api/products/{id}', name: 'detailProduct', methods: ['GET'])]
     public function getDetailProduct(Product $product, SerializerInterface $serializer): JsonResponse {
 
         $jsonProduct = $serializer->serialize($product, 'json');
         return new JsonResponse($jsonProduct, Response::HTTP_OK, ['accept' => 'json'], true);
     }
-
+    /**
+     * Supprime d'un produit spécifique.
+     *
+     * @OA\Response(
+     *     response=204,
+     *     description="Supprime un produit (besoin d'être connecté à un compte administrateur pour effectuer la requête.)",
+     * )
+     * @OA\Tag(name="Products")
+     */
     #[Route('/api/products/{id}', name: 'deleteProduct', methods: ['DELETE'])]
     public function deleteProduct(Product $product, EntityManagerInterface $em): JsonResponse
     {
@@ -67,7 +108,36 @@ class ProductController extends AbstractController
 
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
-
+    /**
+     * Créer un produit.
+     *
+     *
+     * @OA\RequestBody(
+     *     description="Add user",
+     *     required=true,
+     *     @OA\MediaType(
+     *         mediaType="application/json",
+     *         @OA\Schema(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="title",
+     *                 description="titre du produit",
+     *                 type="string"
+     *             ),
+     *             @OA\Property(
+     *                 property="content",
+     *                 description="Contenu du produit",
+     *                 type="string"
+     *             )
+     *         )
+     *     )
+     * )
+     * @OA\Response(
+     *     response=201,
+     *          *     description="Créer un produit (besoin d'être connecté à un compte administrateur pour effectuer la requête.)",
+     * )
+     * @OA\Tag(name="Products")
+     */
     #[Route('/api/create-product', name:"createProduct", methods: ['POST'])]
     public function createProduct(
         Request $request, SerializerInterface $serializer, EntityManagerInterface $em,
